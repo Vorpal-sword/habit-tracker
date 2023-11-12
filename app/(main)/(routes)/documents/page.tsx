@@ -13,8 +13,19 @@ import { Button } from '@/components/ui/button';
 export default function DocumentsPage() {
   const router = useRouter();
   const { user } = useUser();
+  const create = useMutation(api.documents.create);
 
-  const onCreate = () => {};
+  const onCreate = () => {
+    const promise = create({ title: 'Untitled' }).then((documentId) =>
+      router.push(`/documents/${documentId}`)
+    );
+
+    toast.promise(promise, {
+      loading: 'Creating a new note...',
+      success: 'New note created!',
+      error: 'Failed to create a new note.',
+    });
+  };
 
   return (
     <div className="h-full flex flex-col items-center justify-center space-y-4">

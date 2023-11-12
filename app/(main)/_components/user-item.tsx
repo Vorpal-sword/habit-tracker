@@ -14,6 +14,7 @@ import {
 
 export default function UserItem() {
   const { user } = useUser();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
