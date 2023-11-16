@@ -244,8 +244,6 @@ _Follow the instructions below_
 
 <!-- CONTACT -->
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ## Contact
 
 `Wilmer Lopez Cespedes`
