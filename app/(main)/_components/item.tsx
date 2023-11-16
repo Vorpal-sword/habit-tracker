@@ -55,6 +55,13 @@ export default function Item({
   const create = useMutation(api.documents.create);
   const archive = useMutation(api.documents.archive);
 
+  /**
+   * The `onArchive` function is used to move a note to the trash and display a toast message indicating
+   * the success or failure of the operation.
+   * @param event - The event parameter is of type React.MouseEvent<HTMLDivElement, MouseEvent>. It
+   * represents the mouse event that triggered the function.
+   * @returns The function `onArchive` returns nothing (i.e., `void`).
+   */
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
 
@@ -75,6 +82,12 @@ export default function Item({
     onExpand?.();
   };
 
+  /**
+   * The `onCreate` function is used to create a new note and display a toast message indicating the
+   * success or failure of the creation process.
+   * @param event - The event parameter is of type React.MouseEvent<HTMLDivElement, MouseEvent>. It
+   * represents the mouse event that triggered the onCreate function.
+   */
   const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
 
