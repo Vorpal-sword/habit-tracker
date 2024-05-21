@@ -23,7 +23,7 @@ export const Heading = () => {
       {isLoading && <p>Loading...</p>}
       {isAuthenticated && !isLoading && (
         <Button asChild>
-          <Link href="/documents">
+          <Link href="/habits">
             Enter LevelUp
             <ArrowRight className="h-4 w-4 ml-2"></ArrowRight>
           </Link>

@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -36,6 +37,7 @@ export default function RootLayout({
             disableTransitionOnChange
             storageKey="levelup-theme"
           >
+            <Toaster position="bottom-center"></Toaster>
             {children}
           </ThemeProvider>
         </ConvexClientProvider>

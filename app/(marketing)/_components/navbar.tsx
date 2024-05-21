@@ -14,6 +14,7 @@ import Link from "next/link";
 export const Navbar = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const scrolled = useScrollTop();
+
   return (
     <div
       className={cn(
@@ -39,7 +40,7 @@ export const Navbar = () => {
         {isAuthenticated && !isLoading && (
           <>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/documents">Enter LevelUp</Link>
+              <Link href="/habits">Enter LevelUp</Link>
             </Button>
             <UserButton afterSignOutUrl="/"></UserButton>
           </>
