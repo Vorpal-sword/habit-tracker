@@ -12,18 +12,18 @@ import { usePathname } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@/lib/utils";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 import { UserItem } from "./user-item";
 import { Item } from "./item";
+import { HabitList } from "./habit-list";
 
 import { toast } from "sonner";
 
 export const Navigation = () => {
   const pathname = usePathname();
 
-  const habits = useQuery(api.habits.get);
   const create = useMutation(api.habits.create);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -142,12 +142,12 @@ export const Navigation = () => {
           <Item onClick={() => {}} label="Settings" icon={Settings}></Item>
           <Item
             onClick={handleCreate}
-            label="New page"
+            label="New Habit"
             icon={PlusCircle}
           ></Item>
         </div>
         <div className="mt-4">
-          {habits?.map((habit) => <p key={habit._id}>{habit.title}</p>)}
+          <HabitList></HabitList>
         </div>
         <div
           onMouseDown={handleMouseDown}

@@ -1,9 +1,21 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Divide, LucideIcon } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Divide,
+  LucideIcon,
+  Plus,
+} from "lucide-react";
+import { useMutation } from "convex/react";
+import { useRouter } from "next/navigation";
 
 import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
+
+import { toast } from "sonner";
 
 interface ItemProps {
   id?: Id<"habits">;
@@ -12,7 +24,7 @@ interface ItemProps {
   expanded?: boolean;
   isSearch?: boolean;
   level?: number;
-  onExpend?: () => void;
+  onExpand?: () => void;
   label: string;
   onClick: () => void;
   icon: LucideIcon;
@@ -28,9 +40,38 @@ export const Item = ({
   isSearch,
   level = 0,
   expanded,
-  onExpend,
+  onExpand,
 }: ItemProps) => {
+  const router = useRouter();
+  const create = useMutation(api.habits.create);
+  const handleExpand = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    onExpand?.();
+  };
+
+  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    if (!id) return;
+    const promise = create({ title: "Untitiled", parentHabit: id }).then(
+      (habitId) => {
+        if (!expanded) {
+          onExpand?.();
+        }
+        //router.push(`/habits/${habitId}`);
+      }
+    );
+
+    toast.promise(promise, {
+      loading: "Creating a new note ...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
+    });
+  };
+
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
+
   return (
     <div
       onClick={onClick}
@@ -45,7 +86,7 @@ export const Item = ({
         <div
           role="button"
           className="h-full rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 mr-1"
-          onClick={() => {}}
+          onClick={handleExpand}
         >
           <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50"></ChevronIcon>
         </div>
@@ -61,6 +102,29 @@ export const Item = ({
           <span className="text-xs">Ctrl + k</span>
         </kbd>
       )}
+      {!!id && (
+        <div className="ml-auto flex items-center gap-x-2">
+          <div
+            role="button"
+            onClick={onCreate}
+            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+          >
+            <Plus className="h-4 w-4 text-muted-foreground"></Plus>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
+  return (
+    <div
+      style={{ paddingLeft: level ? `${level * 12 + 25}px` : "12px" }}
+      className="flex gap-x-2 py-[3px]"
+    >
+      <Skeleton className="h-4 w-4"></Skeleton>
+      <Skeleton className="h-4 w-[30%]"></Skeleton>
     </div>
   );
 };
