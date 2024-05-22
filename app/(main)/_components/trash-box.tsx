@@ -10,6 +10,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Search, Trash, Undo } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/models/confirm-modal";
+import { Spinner } from "@/components/spinner";
 
 export const TrashBox = () => {
   const router = useRouter();
@@ -57,7 +58,7 @@ export const TrashBox = () => {
   if (habits === undefined) {
     return (
       <div className="h-full flex items-center justify-center p-4">
-        Loading...
+        <Spinner size="lg"></Spinner>
       </div>
     );
   }
@@ -88,14 +89,14 @@ export const TrashBox = () => {
               <div
                 onClick={(e) => onRestore(e, habit._id)}
                 role="button"
-                className="rounded-sm p-2 hover:bg-neutral-200"
+                className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
               >
                 <Undo className="h-4 w-4 text-muted-foreground"></Undo>
               </div>
               <ConfirmModal onConfirm={() => onRemove(habit._id)}>
                 <div
                   role="button"
-                  className="rounded-sm p-2 hover:bg-neutral-200"
+                  className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                 >
                   <Trash className="h-4 w-4 text-muted-foreground"></Trash>
                 </div>

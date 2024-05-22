@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { SignInButton } from "@clerk/clerk-react";
 
 import Link from "next/link";
+import { Spinner } from "../../../components/spinner";
 
 export const Heading = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -20,7 +21,11 @@ export const Heading = () => {
         Level Up is a platform to improve your productivity and create new
         habits
       </h3>
-      {isLoading && <p>Loading...</p>}
+      {isLoading && (
+        <div className="flex items-center w-full justify-center">
+          <Spinner size="lg"></Spinner>
+        </div>
+      )}
       {isAuthenticated && !isLoading && (
         <Button asChild>
           <Link href="/habits">
