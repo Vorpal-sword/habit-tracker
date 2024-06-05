@@ -14,9 +14,9 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+
 import { useSearch } from "@/hooks/use-search";
 import { api } from "@/convex/_generated/api";
-import { document } from "postcss";
 
 export const SearchCommand = () => {
   const { user } = useUser();
@@ -64,7 +64,7 @@ export const SearchCommand = () => {
           {habits?.map((habit) => (
             <CommandItem
               key={habit._id}
-              value={`${habit._id}-${habit.title}`}
+              value={`${habit._id}`}
               title={habit.title}
               onSelect={onSelect}
             >
