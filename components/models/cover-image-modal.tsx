@@ -39,7 +39,7 @@ export const CoverImageModal = () => {
         id: params.habitId as Id<"habits">,
         coverImage: res.url,
       });
-      onClose;
+      onClose();
     }
   };
 

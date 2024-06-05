@@ -306,3 +306,30 @@ export const removeIcon = mutation({
     return habit;
   },
 });
+
+export const removeCoverImage = mutation({
+  args: { id: v.id("habits") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authentificated");
+    }
+
+    const userId = identity.subject;
+
+    const existingHabit = await ctx.db.get(args.id);
+
+    if (!existingHabit) {
+      throw new Error("Not Found");
+    }
+    if (existingHabit.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const habit = await ctx.db.patch(args.id, {
+      coverImage: undefined,
+    });
+    return habit;
+  },
+});
