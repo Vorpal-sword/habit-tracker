@@ -1,28 +1,25 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import { useMutation } from 'convex/react';
+import { useRef, useState } from "react";
+import { useMutation } from "convex/react";
 
-import { Doc } from '@/convex/_generated/dataModel';
-import { api } from '@/convex/_generated/api';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Doc } from "@/convex/_generated/dataModel";
+import { api } from "@/convex/_generated/api";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TitleProps {
-  initialData: Doc<'documents'>;
+  initialData: Doc<"documents">;
 }
 
 export default function Title({ initialData }: TitleProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const update = useMutation(api.documents.update);
 
-  const [title, setTitle] = useState(initialData.title || 'Untitled');
+  const [title, setTitle] = useState(initialData.title || "Untitled");
   const [isEditing, setIsEditing] = useState(false);
 
-  /**
-   * The function `enableInput` sets the title, enables editing, and focuses on an input field.
-   */
   const enableInput = () => {
     setTitle(initialData.title);
     setIsEditing(true);
@@ -36,22 +33,16 @@ export default function Title({ initialData }: TitleProps) {
     setIsEditing(false);
   };
 
-  /**
-   * The onChange function updates the title state and calls the update function with the new title
-   * value.
-   * @param event - The event parameter is of type React.ChangeEvent<HTMLInputElement>. It represents the
-   * event that occurred when the input value is changed.
-   */
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
     update({
       id: initialData._id,
-      title: event.target.value || 'Untitled',
+      title: event.target.value || "Untitled",
     });
   };
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       disableInput();
     }
   };

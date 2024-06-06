@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useMutation } from 'convex/react';
-import { toast } from 'sonner';
-import { Check, Copy, Globe } from 'lucide-react';
+import { useState } from "react";
+import { useMutation } from "convex/react";
+import { toast } from "sonner";
+import { Check, Copy, Globe } from "lucide-react";
 
-import { Doc } from '@/convex/_generated/dataModel';
+import { Doc } from "@/convex/_generated/dataModel";
 import {
   PopoverTrigger,
   Popover,
   PopoverContent,
-} from '@/components/ui/popover';
-import { api } from '@/convex/_generated/api';
-import { Button } from '@/components/ui/button';
-import { useOrigin } from '@/hooks/use-origin';
+} from "@/components/ui/popover";
+import { api } from "@/convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface PublishProps {
-  initialData: Doc<'documents'>;
+  initialData: Doc<"documents">;
 }
 
 export default function Publish({ initialData }: PublishProps) {
@@ -28,10 +28,6 @@ export default function Publish({ initialData }: PublishProps) {
 
   const url = `${origin}/preview/${initialData._id}`;
 
-  /**
-   * The `onPublish` function updates a note's `isPublished` property to `true` and displays a toast
-   * message indicating the publishing status.
-   */
   const onPublish = () => {
     setIsSubmitting(true);
 
@@ -41,16 +37,12 @@ export default function Publish({ initialData }: PublishProps) {
     }).finally(() => setIsSubmitting(false));
 
     toast.promise(promise, {
-      loading: 'Publishing...',
-      success: 'Note published',
-      error: 'Failed to publish note.',
+      loading: "Publishing...",
+      success: "Note published",
+      error: "Failed to publish note.",
     });
   };
 
-  /**
-   * The `onUnpublish` function updates the `isPublished` property of a note to `false` and displays a
-   * toast message indicating the status of the operation.
-   */
   const onUnpublish = () => {
     setIsSubmitting(true);
 
@@ -60,9 +52,9 @@ export default function Publish({ initialData }: PublishProps) {
     }).finally(() => setIsSubmitting(false));
 
     toast.promise(promise, {
-      loading: 'Unpublishing...',
-      success: 'Note unpublished',
-      error: 'Failed to unpublish note.',
+      loading: "Unpublishing...",
+      success: "Note unpublished",
+      error: "Failed to unpublish note.",
     });
   };
 

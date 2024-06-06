@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   ChevronsLeft,
@@ -8,27 +8,27 @@ import {
   Search,
   Settings,
   Trash,
-} from 'lucide-react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { ElementRef, useEffect, useRef, useState } from 'react';
-import { useMediaQuery } from 'usehooks-ts';
-import { useMutation } from 'convex/react';
-import { toast } from 'sonner';
+} from "lucide-react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { ElementRef, useEffect, useRef, useState } from "react";
+import { useMediaQuery } from "usehooks-ts";
+import { useMutation } from "convex/react";
+import { toast } from "sonner";
 
-import { cn } from '@/lib/utils';
-import { api } from '@/convex/_generated/api';
+import { cn } from "@/lib/utils";
+import { api } from "@/convex/_generated/api";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '@/components/ui/popover';
-import UserItem from './user-item';
-import DocumentList from './document-list';
-import Item from './item';
-import TrashBox from './trash-box';
-import { useSearch } from '@/hooks/use-search';
-import { useSettings } from '@/hooks/use-settings';
-import Navbar from './navbar';
+} from "@/components/ui/popover";
+import UserItem from "./user-item";
+import DocumentList from "./document-list";
+import Item from "./item";
+import TrashBox from "./trash-box";
+import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
+import Navbar from "./navbar";
 
 export default function Navigation() {
   const router = useRouter();
@@ -36,12 +36,12 @@ export default function Navigation() {
   const pathname = usePathname();
   const search = useSearch();
   const settings = useSettings();
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const create = useMutation(api.documents.create);
 
   const isResizingRef = useRef(false);
-  const sidebarRef = useRef<ElementRef<'aside'>>(null);
-  const navbarRef = useRef<ElementRef<'div'>>(null);
+  const sidebarRef = useRef<ElementRef<"aside">>(null);
+  const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
 
@@ -59,14 +59,6 @@ export default function Navigation() {
     }
   }, [pathname, isMobile]);
 
-  /**
-   * The function `handleMouseDown` is a callback function that is triggered when a mouse button is
-   * pressed down on a specific HTML div element, and it prevents the default behavior of the event,
-   * stops the event from propagating further, sets a flag to indicate that resizing is in progress, and
-   * adds event listeners for mouse move and mouse up events.
-   * @param event - The event parameter is of type React.MouseEvent<HTMLDivElement, MouseEvent>. It
-   * represents the mouse event that occurred.
-   */
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -74,20 +66,10 @@ export default function Navigation() {
     event.stopPropagation();
 
     isResizingRef.current = true;
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
-  /**
-   * The handleMouseMove function updates the width of the sidebar and navbar elements based on the
-   * client's mouse movement, with constraints on the minimum and maximum width values.
-   * @param {MouseEvent} event - The event parameter is of type MouseEvent, which represents a mouse
-   * event. It contains information about the mouse movement, such as the current position of the mouse
-   * cursor.
-   * @returns If the `isResizingRef.current` is false, nothing is being returned. If
-   * `isResizingRef.current` is true, the function updates the width of the `sidebarRef.current` and the
-   * `navbarRef.current` elements and returns undefined.
-   */
   const handleMouseMove = (event: MouseEvent) => {
     if (!isResizingRef.current) return;
     let newWidth = event.clientX;
@@ -97,9 +79,9 @@ export default function Navigation() {
 
     if (sidebarRef.current && navbarRef.current) {
       sidebarRef.current.style.width = `${newWidth}px`;
-      navbarRef.current.style.setProperty('left', `${newWidth}px`);
+      navbarRef.current.style.setProperty("left", `${newWidth}px`);
       navbarRef.current.style.setProperty(
-        'width',
+        "width",
         `calc(100% - ${newWidth}px)`
       );
     }
@@ -107,54 +89,46 @@ export default function Navigation() {
 
   const handleMouseUp = () => {
     isResizingRef.current = false;
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
   };
 
-  /**
-   * The function `resetWidth` adjusts the width of the sidebar and navbar elements based on the value of
-   * the `isMobile` variable.
-   */
   const resetWidth = () => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(false);
       setIsResetting(true);
 
-      sidebarRef.current.style.width = isMobile ? '100%' : '240px';
+      sidebarRef.current.style.width = isMobile ? "100%" : "240px";
       navbarRef.current.style.setProperty(
-        'width',
-        isMobile ? '0' : 'calc(100% - 240px)'
+        "width",
+        isMobile ? "0" : "calc(100% - 240px)"
       );
-      navbarRef.current.style.setProperty('left', isMobile ? '100%' : '240px');
+      navbarRef.current.style.setProperty("left", isMobile ? "100%" : "240px");
       setTimeout(() => setIsResetting(false), 300);
     }
   };
 
-  /**
-   * The `collapse` function is used to collapse a sidebar and expand the navbar in a TypeScript React
-   * application.
-   */
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(true);
       setIsResetting(true);
 
-      sidebarRef.current.style.width = '0';
-      navbarRef.current.style.setProperty('width', '100%');
-      navbarRef.current.style.setProperty('left', '0');
+      sidebarRef.current.style.width = "0";
+      navbarRef.current.style.setProperty("width", "100%");
+      navbarRef.current.style.setProperty("left", "0");
       setTimeout(() => setIsResetting(false), 300);
     }
   };
 
   const handleCreate = () => {
-    const promise = create({ title: 'Untitled' }).then((documentId) =>
+    const promise = create({ title: "Untitled" }).then((documentId) =>
       router.push(`/documents/${documentId}`)
     );
 
     toast.promise(promise, {
-      loading: 'Creating a new note...',
-      success: 'New note created!',
-      error: 'Failed to create a new note.',
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
     });
   };
 
@@ -163,17 +137,17 @@ export default function Navigation() {
       <aside
         ref={sidebarRef}
         className={cn(
-          'group/sidebar h-full bg-secondary overflow-y-auto relative flex w-60 flex-col z-[99999]',
-          isResetting && 'transition-all ease-in-out duration-300',
-          isMobile && 'w-0'
+          "group/sidebar h-full bg-secondary overflow-y-auto relative flex w-60 flex-col z-[99999]",
+          isResetting && "transition-all ease-in-out duration-300",
+          isMobile && "w-0"
         )}
       >
         <div
           onClick={collapse}
           role="button"
           className={cn(
-            'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition',
-            isMobile && 'opacity-100'
+            "h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition",
+            isMobile && "opacity-100"
           )}
         >
           <ChevronsLeft className="h-6 w-6" />
@@ -193,7 +167,7 @@ export default function Navigation() {
             </PopoverTrigger>
             <PopoverContent
               className="p-0 w-72"
-              side={isMobile ? 'bottom' : 'right'}
+              side={isMobile ? "bottom" : "right"}
             >
               <TrashBox />
             </PopoverContent>
@@ -209,9 +183,9 @@ export default function Navigation() {
       <div
         ref={navbarRef}
         className={cn(
-          'absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]',
-          isResetting && 'transition-all ease-in-out duration-300',
-          isMobile && 'left-0 w-full'
+          "absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]",
+          isResetting && "transition-all ease-in-out duration-300",
+          isMobile && "left-0 w-full"
         )}
       >
         <nav className="bg-transparent px-3 py-2 w-full">

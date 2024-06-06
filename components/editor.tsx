@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useTheme } from 'next-themes';
-import { BlockNoteEditor, PartialBlock } from '@blocknote/core';
-import { BlockNoteView, useBlockNote } from '@blocknote/react';
-import '@blocknote/core/style.css';
+import { useTheme } from "next-themes";
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
+import { BlockNoteView, useBlockNote } from "@blocknote/react";
+import "@blocknote/core/style.css";
 
-import { useEdgeStore } from '@/lib/edgestore';
+import { useEdgeStore } from "@/lib/edgestore";
 
 interface EditorProps {
   onChange: (value: string) => void;
@@ -21,14 +21,6 @@ export default function Editor({
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
 
-  /**
-   * The function `handleUpload` uploads a file using the `edgestore.publicFiles.upload` method and
-   * returns the URL of the uploaded file.
-   * @param {File} file - The `file` parameter is of type `File`, which represents a file selected by the
-   * user through an input element of type "file". It contains information about the file, such as its
-   * name, size, and type.
-   * @returns The function `handleUpload` is returning the URL of the uploaded file.
-   */
   const handleUpload = async (file: File) => {
     const response = await edgestore.publicFiles.upload({
       file,
@@ -52,7 +44,7 @@ export default function Editor({
     <div>
       <BlockNoteView
         editor={editor}
-        theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+        theme={resolvedTheme === "dark" ? "dark" : "light"}
       />
     </div>
   );

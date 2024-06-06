@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { ImageIcon, X } from 'lucide-react';
-import { useMutation } from 'convex/react';
-import { useParams } from 'next/navigation';
+import Image from "next/image";
+import { ImageIcon, X } from "lucide-react";
+import { useMutation } from "convex/react";
+import { useParams } from "next/navigation";
 
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useCoverImage } from '@/hooks/use-cover-image';
-import { api } from '@/convex/_generated/api';
-import { Id } from '@/convex/_generated/dataModel';
-import { useEdgeStore } from '@/lib/edgestore';
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useCoverImage } from "@/hooks/use-cover-image";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useEdgeStore } from "@/lib/edgestore";
 
 interface CoverImageProps {
   url?: string;
@@ -24,10 +24,6 @@ export default function Cover({ url, preview }: CoverImageProps) {
   const coverImage = useCoverImage();
   const removeCoverImage = useMutation(api.documents.removeCoverImage);
 
-  /**
-   * The `onRemove` function deletes a public file using the `edgestore.publicFiles.delete` method and
-   * removes a cover image by calling the `removeCoverImage` function.
-   */
   const onRemove = async () => {
     if (url) {
       await edgestore.publicFiles.delete({
@@ -35,16 +31,16 @@ export default function Cover({ url, preview }: CoverImageProps) {
       });
     }
     removeCoverImage({
-      id: params.documentId as Id<'documents'>,
+      id: params.documentId as Id<"documents">,
     });
   };
 
   return (
     <div
       className={cn(
-        'relative w-full h-[35vh] group',
-        !url && 'h-[12vh]',
-        url && 'bg-muted'
+        "relative w-full h-[35vh] group",
+        !url && "h-[12vh]",
+        url && "bg-muted"
       )}
     >
       {!!url && <Image src={url} fill alt="Cover" className="object-cover" />}

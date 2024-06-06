@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery } from 'convex/react';
-import dynamic from 'next/dynamic';
-import { useMemo } from 'react';
+import { useMutation, useQuery } from "convex/react";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
 
-import { api } from '@/convex/_generated/api';
-import { Id } from '@/convex/_generated/dataModel';
-import { Skeleton } from '@/components/ui/skeleton';
-import Toolbar from '@/components/toolbar';
-import Cover from '@/components/cover';
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { Skeleton } from "@/components/ui/skeleton";
+import Toolbar from "@/components/toolbar";
+import Cover from "@/components/cover";
 
 interface DocumentIdPageProps {
   params: {
-    documentId: Id<'documents'>;
+    documentId: Id<"documents">;
   };
 }
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const Editor = useMemo(
-    () => dynamic(() => import('@/components/editor'), { ssr: false }),
+    () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   );
 
@@ -60,6 +60,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       <Cover url={document.coverImage} />
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         <Toolbar initialData={document} />
+        <div> HELLP</div>
         <Editor onChange={onChange} initialContent={document.content} />
       </div>
     </div>

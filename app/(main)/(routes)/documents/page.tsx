@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useUser } from '@clerk/clerk-react';
-import { PlusCircle } from 'lucide-react';
-import { useMutation } from 'convex/react';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import Image from "next/image";
+import { useUser } from "@clerk/clerk-react";
+import { PlusCircle } from "lucide-react";
+import { useMutation } from "convex/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-import { api } from '@/convex/_generated/api';
-import { Button } from '@/components/ui/button';
+import { api } from "@/convex/_generated/api";
+import { Button } from "@/components/ui/button";
 
 export default function DocumentsPage() {
   const router = useRouter();
@@ -16,39 +16,39 @@ export default function DocumentsPage() {
   const create = useMutation(api.documents.create);
 
   const onCreate = () => {
-    const promise = create({ title: 'Untitled' }).then((documentId) =>
+    const promise = create({ title: "Untitled" }).then((documentId) =>
       router.push(`/documents/${documentId}`)
     );
 
     toast.promise(promise, {
-      loading: 'Creating a new note...',
-      success: 'New note created!',
-      error: 'Failed to create a new note.',
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
     });
   };
 
   return (
     <div className="h-full flex flex-col items-center justify-center space-y-4">
+      Ooops, you have empty list of Habits...
+      <p>Please Create 1 Below </p>
       <Image
-        src="/empty.png"
-        height="300"
-        width="300"
-        alt="Empty"
+        src="/sad-box.png"
+        height="200"
+        width="200"
+        alt="Sad Box"
         className="dark:hidden"
-      />
+      ></Image>
       <Image
-        src="/empty-dark.png"
-        height="300"
-        width="300"
-        alt="Empty"
+        src="/sad-box-dark.png"
+        height="200"
+        width="200"
+        alt="Sad Box"
         className="hidden dark:block"
-      />
-      <h2 className="text-lg font-medium">
-        Welcome to {user?.firstName}&apos;s Jotion
-      </h2>
+      ></Image>
+      <h2 className="text-lg font-medium">Welcome to LevelUp</h2>
       <Button onClick={onCreate}>
-        <PlusCircle className="h-4 w-4 mr-2" />
-        Create a note
+        <PlusCircle className="h-4 w-4 mr-2"></PlusCircle>
+        Create a Habit
       </Button>
     </div>
   );

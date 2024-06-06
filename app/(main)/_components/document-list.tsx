@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useQuery } from 'convex/react';
-import { FileIcon } from 'lucide-react';
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useQuery } from "convex/react";
+import { FileIcon } from "lucide-react";
 
-import { Doc, Id } from '@/convex/_generated/dataModel';
-import { api } from '@/convex/_generated/api';
-import { cn } from '@/lib/utils';
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { api } from "@/convex/_generated/api";
+import { cn } from "@/lib/utils";
 
-import Item from './item';
+import Item from "./item";
 
 interface DocumentListProps {
-  parentDocumentId?: Id<'documents'>;
+  parentDocumentId?: Id<"documents">;
   level?: number;
-  data?: Doc<'documents'>[];
+  data?: Doc<"documents">[];
 }
 
 export default function DocumentList({
@@ -26,9 +26,6 @@ export default function DocumentList({
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const onExpand = (documentId: string) => {
-    /* The `setExpanded` function is updating the state of the `expanded` variable. It takes a callback
-   function as an argument, which receives the previous value of `expanded` as an argument
-   (`prevExpanded`). */
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
       [documentId]: !prevExpanded[documentId],
@@ -64,9 +61,9 @@ export default function DocumentList({
           paddingLeft: level ? `${level * 12 + 25}px` : undefined,
         }}
         className={cn(
-          'hidden text-sm font-medium text-muted-foreground/80',
-          expanded && 'last:block',
-          level === 0 && 'hidden'
+          "hidden text-sm font-medium text-muted-foreground/80",
+          expanded && "last:block",
+          level === 0 && "hidden"
         )}
       >
         No pages inside
