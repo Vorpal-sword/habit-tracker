@@ -77,3 +77,57 @@ export const updateHabitDays = mutation({
     return habit;
   },
 });
+
+// Мутація для оновлення назви звички
+export const updateHabit = mutation({
+  args: { habitId: v.id("habits"), name: v.string() },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+    const existingHabit = await ctx.db.get(args.habitId);
+
+    if (!existingHabit) {
+      throw new Error("Not found");
+    }
+
+    if (existingHabit.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const habit = await ctx.db.patch(args.habitId, {
+      name: args.name,
+    });
+
+    return habit;
+  },
+});
+
+// Мутація для видалення звички
+export const deleteHabit = mutation({
+  args: { habitId: v.id("habits") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+    const existingHabit = await ctx.db.get(args.habitId);
+
+    if (!existingHabit) {
+      throw new Error("Not found");
+    }
+
+    if (existingHabit.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.delete(args.habitId);
+  },
+});

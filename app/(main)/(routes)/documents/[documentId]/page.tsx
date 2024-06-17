@@ -9,6 +9,9 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Skeleton } from "@/components/ui/skeleton";
 import Toolbar from "@/components/toolbar";
 import Cover from "@/components/cover";
+import ConfirmModal from "@/components/modals/confirm-modal";
+import { Trash } from "lucide-react";
+import { FaTimes } from "react-icons/fa";
 
 interface Habit {
   _id: Id<"habits">;
@@ -40,8 +43,10 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     documentId: params.documentId,
   });
 
-  const createHabit = useMutation(api.habits.createHabit);
   const updateHabitDays = useMutation(api.habits.updateHabitDays);
+  const createHabit = useMutation(api.habits.createHabit);
+  const updateHabit = useMutation(api.habits.updateHabit);
+  const deleteHabit = useMutation(api.habits.deleteHabit);
 
   const [newHabitName, setNewHabitName] = useState("");
 
@@ -58,6 +63,24 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       documentId: params.documentId,
     });
     setNewHabitName("");
+  };
+
+  const [editedHabitId, setEditedHabitId] = useState<Id<"habits"> | null>(null);
+  const [editedHabitName, setEditedHabitName] = useState("");
+
+  const startEditingHabit = (habit: Habit) => {
+    setEditedHabitId(habit._id);
+    setEditedHabitName(habit.name);
+  };
+
+  const saveHabitName = (habitId: Id<"habits">) => {
+    updateHabit({ habitId, name: editedHabitName });
+    setEditedHabitId(null);
+    setEditedHabitName("");
+  };
+
+  const removeHabit = (habitId: Id<"habits">) => {
+    deleteHabit({ habitId });
   };
 
   if (document === undefined || habits === undefined) {
@@ -101,42 +124,71 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
             {habits.map((habit: Habit) => (
               <div
                 key={habit._id}
-                className="flex items-center justify-center space-x-4 bg-purple-100"
+                className="relative flex items-center justify-between p-4 bg-purple-100"
               >
-                <div className="flex-shrink-0 w-44 items-center flex justify-center bg-purple-300">
-                  <span className="text-xl break-words w-full items-center text-center ">
-                    {habit.name}
-                  </span>
+                <div className="flex items-center space-x-4">
+                  {editedHabitId === habit._id ? (
+                    <input
+                      className="flex-shrink-0 w-44 p-2 bg-white border border-gray-300"
+                      value={editedHabitName}
+                      onChange={(e) => setEditedHabitName(e.target.value)}
+                      onBlur={() => saveHabitName(habit._id)}
+                    />
+                  ) : (
+                    <div
+                      className="flex-shrink-0 w-44 items-center flex justify-center bg-purple-300 cursor-pointer"
+                      onClick={() => startEditingHabit(habit)}
+                    >
+                      <span className="text-xl break-words w-full items-center text-center ">
+                        {habit.name}
+                      </span>
+                    </div>
+                  )}
+                  <div className="my-1">
+                    <div className="flex space-x-1 mb-1">
+                      <div className="flex flex-wrap-reverse space-x-1">
+                        {habit.days.slice(0, 15).map((day, index) => (
+                          <div
+                            key={index}
+                            className={`w-10 h-10 flex items-center justify-center ${
+                              day === "green"
+                                ? "bg-green-500"
+                                : day === "red"
+                                  ? "bg-red-500"
+                                  : "bg-white"
+                            } border border-gray-300 cursor-pointer`}
+                            onClick={() => handleDayClick(habit, index)}
+                          >
+                            {index + 1}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex space-x-1">
+                      <div className="flex flex-wrap-reverse space-x-1">
+                        {habit.days.slice(15, 30).map((day, index) => (
+                          <div
+                            key={index + 15}
+                            className={`w-10 h-10 flex items-center justify-center ${
+                              day === "green"
+                                ? "bg-green-500"
+                                : day === "red"
+                                  ? "bg-red-500"
+                                  : "bg-white"
+                            } border border-gray-300 cursor-pointer`}
+                            onClick={() => handleDayClick(habit, index + 15)}
+                          >
+                            {index + 16}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="my-1">
-                  <div className="flex space-x-1 mb-1">
-                    <div className="flex flex-wrap-reverse space-x-1">
-                      {habit.days.slice(0, 15).map((day, index) => (
-                        <div
-                          key={index}
-                          className={`w-10 h-10 flex items-center justify-center ${day === "green" ? "bg-green-500" : day === "red" ? "bg-red-500" : "bg-white"} border border-gray-300 cursor-pointer`}
-                          onClick={() => handleDayClick(habit, index)}
-                        >
-                          {index + 1}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex space-x-1">
-                    <div className="flex flex-wrap-reverse space-x-1">
-                      {habit.days.slice(15, 30).map((day, index) => (
-                        <div
-                          key={index + 15}
-                          className={`w-10 h-10 flex items-center justify-center ${day === "green" ? "bg-green-500" : day === "red" ? "bg-red-500" : "bg-white"} border border-gray-300 cursor-pointer`}
-                          onClick={() => handleDayClick(habit, index + 15)}
-                        >
-                          {index + 16}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <ConfirmModal onConfirm={() => removeHabit(habit._id)}>
+                  <FaTimes className="absolute top-2 right-2 cursor-pointer" />
+                </ConfirmModal>
               </div>
             ))}
             <div className="flex space-x-4">
@@ -156,7 +208,6 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
             </div>
           </div>
         </div>
-
         <Editor
           onChange={(content) => update({ id: params.documentId, content })}
           initialContent={document.content}
