@@ -7,6 +7,18 @@ body,
 :root {
   height: 100%;
 }
+.frozen {
+  display: flex;
+  width: 50px;
+  height: 40px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background: #e8050500 center/cover url("../public/freeze4.png") no-repeat;
+  background-blend-mode: multiply; /* Застосовуємо ефект multiply до фонового зображення */
+  cursor: not-allowed;
+  border: none;
+}
 
 @layer base {
   :root {

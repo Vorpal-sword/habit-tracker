@@ -1,12 +1,12 @@
 import { v } from "convex/values";
-
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const createHabit = mutation({
   args: {
     name: v.string(),
-    documentId: v.id("documents"), // Використовуємо v.id замість Id
+    documentId: v.id("documents"),
+    days: v.number(), // Number of days for the habit
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -21,7 +21,9 @@ export const createHabit = mutation({
       name: args.name,
       userId,
       documentId: args.documentId,
-      days: Array(30).fill("white"), // Initialize 30 days with "white"
+      days: Array(args.days).fill("white"),
+      comments: Array(args.days).fill(""),
+      createdAt: new Date().toISOString(),
     });
 
     return habit;
@@ -29,7 +31,7 @@ export const createHabit = mutation({
 });
 
 export const getHabitsByDocumentId = query({
-  args: { documentId: v.id("documents") }, // Використовуємо v.id замість Id
+  args: { documentId: v.id("documents") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -51,7 +53,11 @@ export const getHabitsByDocumentId = query({
 });
 
 export const updateHabitDays = mutation({
-  args: { habitId: v.id("habits"), days: v.array(v.string()) },
+  args: {
+    habitId: v.id("habits"),
+    days: v.array(v.string()),
+    comments: v.array(v.string()),
+  },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -72,13 +78,13 @@ export const updateHabitDays = mutation({
 
     const habit = await ctx.db.patch(args.habitId, {
       days: args.days,
+      comments: args.comments,
     });
 
     return habit;
   },
 });
 
-// Мутація для оновлення назви звички
 export const updateHabit = mutation({
   args: { habitId: v.id("habits"), name: v.string() },
   handler: async (ctx, args) => {
@@ -107,7 +113,6 @@ export const updateHabit = mutation({
   },
 });
 
-// Мутація для видалення звички
 export const deleteHabit = mutation({
   args: { habitId: v.id("habits") },
   handler: async (ctx, args) => {

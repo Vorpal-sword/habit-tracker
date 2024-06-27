@@ -10,15 +10,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Toolbar from "@/components/toolbar";
 import Cover from "@/components/cover";
 import ConfirmModal from "@/components/modals/confirm-modal";
-import { Trash } from "lucide-react";
 import { FaTimes } from "react-icons/fa";
 
 interface Habit {
   _id: Id<"habits">;
   name: string;
   userId: string;
-  days: string[];
   documentId: Id<"documents">;
+  days: string[];
+  comments: string[];
+  createdAt: string;
 }
 
 interface DocumentIdPageProps {
@@ -49,20 +50,51 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const deleteHabit = useMutation(api.habits.deleteHabit);
 
   const [newHabitName, setNewHabitName] = useState("");
+  const [newHabitDays, setNewHabitDays] = useState(30); // Default to 30 days
 
   const handleDayClick = (habit: Habit, dayIndex: number) => {
-    const updatedDays = [...habit.days];
-    updatedDays[dayIndex] = updatedDays[dayIndex] === "green" ? "red" : "green";
+    const currentDate = new Date();
+    const habitStartDate = new Date(habit.createdAt);
+    const diffDays = Math.floor(
+      (currentDate.getTime() - habitStartDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
-    updateHabitDays({ habitId: habit._id, days: updatedDays });
+    if (dayIndex <= diffDays) {
+      if (dayIndex === diffDays) {
+        const updatedDays = [...habit.days];
+        updatedDays[dayIndex] =
+          updatedDays[dayIndex] === "green" ? "red" : "green";
+        updateHabitDays({
+          habitId: habit._id,
+          days: updatedDays,
+          comments: habit.comments,
+        });
+      }
+    } else {
+      const updatedComments = [...habit.comments];
+      updatedComments[dayIndex] =
+        prompt("Enter your comment for this day:") || "";
+      updateHabitDays({
+        habitId: habit._id,
+        days: habit.days,
+        comments: updatedComments,
+      });
+    }
   };
 
   const addHabit = () => {
+    if (!newHabitName.trim()) {
+      alert("Please enter a habit name.");
+      return;
+    }
+
     createHabit({
       name: newHabitName,
       documentId: params.documentId,
+      days: newHabitDays,
     });
     setNewHabitName("");
+    setNewHabitDays(30); // Reset to default
   };
 
   const [editedHabitId, setEditedHabitId] = useState<Id<"habits"> | null>(null);
@@ -99,13 +131,6 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     );
   }
 
-  const onChange = (content: string) => {
-    update({
-      id: params.documentId,
-      content,
-    });
-  };
-
   if (document === null) {
     return <div>Not found</div>;
   }
@@ -124,19 +149,19 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
             {habits.map((habit: Habit) => (
               <div
                 key={habit._id}
-                className="relative flex items-center justify-between p-4 bg-purple-100"
+                className="relative flex items-center justify-between p-4 bg-purple-100 border border-fuchsia-900"
               >
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 ">
                   {editedHabitId === habit._id ? (
                     <input
-                      className="flex-shrink-0 w-44 p-2 bg-white border border-gray-300"
+                      className="flex-shrink-0 w-44 p-2 bg-white border border-fuchsia-900"
                       value={editedHabitName}
                       onChange={(e) => setEditedHabitName(e.target.value)}
                       onBlur={() => saveHabitName(habit._id)}
                     />
                   ) : (
                     <div
-                      className="flex-shrink-0 w-44 items-center flex justify-center bg-purple-300 cursor-pointer"
+                      className="flex-shrink-0 w-44 items-center flex justify-center  cursor-pointer"
                       onClick={() => startEditingHabit(habit)}
                     >
                       <span className="text-xl break-words w-full items-center text-center ">
@@ -145,40 +170,46 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
                     </div>
                   )}
                   <div className="my-1">
-                    <div className="flex space-x-1 mb-1">
-                      <div className="flex flex-wrap-reverse space-x-1">
-                        {habit.days.slice(0, 15).map((day, index) => (
+                    <div className="flex space-x-1 mt-1 ">
+                      <div className="flex flex-wrap items-center justify-center">
+                        {habit.days.map((day, index) => (
                           <div
                             key={index}
-                            className={`w-10 h-10 flex items-center justify-center ${
+                            className={`w-10 h-10 mb-1 mr-1 flex items-center justify-center ${
+                              index <
+                              Math.floor(
+                                (new Date().getTime() -
+                                  new Date(habit.createdAt).getTime()) /
+                                  (1000 * 60 * 60 * 24)
+                              )
+                                ? "border-gray-100"
+                                : ""
+                            } ${
                               day === "green"
                                 ? "bg-green-500"
                                 : day === "red"
-                                  ? "bg-red-500"
-                                  : "bg-white"
-                            } border border-gray-300 cursor-pointer`}
+                                ? "bg-red-500"
+                                : habit.comments[index]
+                                ? "bg-yellow-200"
+                                : "bg-white"
+                            } border border-gray-700 cursor-pointer`}
                             onClick={() => handleDayClick(habit, index)}
                           >
-                            {index + 1}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex space-x-1">
-                      <div className="flex flex-wrap-reverse space-x-1">
-                        {habit.days.slice(15, 30).map((day, index) => (
-                          <div
-                            key={index + 15}
-                            className={`w-10 h-10 flex items-center justify-center ${
-                              day === "green"
-                                ? "bg-green-500"
-                                : day === "red"
-                                  ? "bg-red-500"
-                                  : "bg-white"
-                            } border border-gray-300 cursor-pointer`}
-                            onClick={() => handleDayClick(habit, index + 15)}
-                          >
-                            {index + 16}
+                            <div
+                              key={index}
+                              className={`${
+                                index <
+                                Math.floor(
+                                  (new Date().getTime() -
+                                    new Date(habit.createdAt).getTime()) /
+                                    (1000 * 60 * 60 * 24)
+                                )
+                                  ? "frozen "
+                                  : ""
+                              }`}
+                            >
+                              {index + 1}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -199,8 +230,15 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
                 value={newHabitName}
                 onChange={(e) => setNewHabitName(e.target.value)}
               />
+              <input
+                className="flex-1 border border-gray-300 p-2"
+                type="number"
+                placeholder="Number of days"
+                value={newHabitDays}
+                onChange={(e) => setNewHabitDays(Number(e.target.value))}
+              />
               <button
-                className="px-4 py-2 bg-blue-500 text-white"
+                className="px-4 py-2 bg-green-500 text-white"
                 onClick={addHabit}
               >
                 Add Habit

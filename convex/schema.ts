@@ -20,6 +20,8 @@ export default defineSchema({
     userId: v.string(),
     documentId: v.id("documents"),
     days: v.array(v.string()),
+    comments: v.array(v.string()),
+    createdAt: v.string(),
   })
     .index("by_user", ["userId"])
     .index("by_user_document", ["userId", "documentId"]),
